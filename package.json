@@ -1,6 +1,6 @@
 {
   "name": "sode-extend-react",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Clases extendidas de JavaScript para el manejo rápido de datos",
   "main": "index.js",
   "scripts": {
