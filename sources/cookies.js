@@ -82,12 +82,7 @@ class Cookies {
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
             const name = cookie.split('=')[0];
-            const encripted = cookie.substring(name.length + 1, cookie.length);
-            try {
-                result[name] = AES.decrypt(encripted, this.#hash).toString(enc.Utf8)
-            } catch (error) {
-                result[name] = encripted
-            }
+            result[name] = this.get(name)
         }
         return result;
     }
