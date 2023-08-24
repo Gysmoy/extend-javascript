@@ -12,5 +12,17 @@
   "license": "ISC",
   "dependencies": {
     "crypto-js": "^4.1.1"
+  },
+  "files": [
+    "cookies.js",
+    "index.js",
+    "notify.js",
+    "README.md",
+    "storage.js"
+  ],
+  "exports": {
+    "./cookies": "./cookies.js",
+    "./notify": "./notify.js",
+    "./storage": "./storage.js"
   }
 }
