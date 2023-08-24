@@ -1,3 +1,5 @@
+'use-strict'
+
 class Notify {
     static container = () => {
         let e = document.createElement('div');
@@ -144,4 +146,4 @@ class Notify {
     }
 }
 
-export default Notify
+module.exports = Notify

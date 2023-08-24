@@ -1,4 +1,6 @@
-import { AES, enc } from 'crypto-js'
+'use-strict'
+
+const { AES, enc } = require("crypto-js");
 
 /**
  * La clase `Local` proporciona métodos para administrar datos en el almacenamiento local,
@@ -207,4 +209,4 @@ class Session extends Local {
 Local.storage_types = JSON.parse(localStorage.getItem("storage_types")) || {};
 Session.storage_types = JSON.parse(sessionStorage.getItem("storage_types")) || {};
 
-export default { Local, Session }
+module.exports = { Local, Session }

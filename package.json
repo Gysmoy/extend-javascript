@@ -3,7 +3,6 @@
   "version": "1.0.4",
   "description": "Clases extendidas de JavaScript para el manejo rápido de datos",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

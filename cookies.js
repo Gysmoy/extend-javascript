@@ -1,4 +1,6 @@
-import { AES, enc } from 'crypto-js'
+'use-strict'
+
+const { AES, enc } = require("crypto-js");
 
 /**
  * La clase Cookies proporciona métodos para configurar, obtener, eliminar y
@@ -112,4 +114,4 @@ class Cookies {
     }
 }
 
-export default Cookies
+module.exports = Cookies
