@@ -1,8 +1,10 @@
+const Clipboard = require('./sources/clipboard')
 const Cookies = require('./sources/cookies')
-const Notify = require('./sources/notify')
-const storage = require('./sources/storage')
 const GET = require('./sources/get')
 const JSON = require('./sources/json')
+const Math = require('./sources/math')
+const Notify = require('./sources/notify')
+const storage = require('./sources/storage')
 
 module.exports = {
     Local: storage.Local,
@@ -10,5 +12,7 @@ module.exports = {
     Cookies,
     Notify,
     GET,
-    JSON
+    JSON,
+    Math,
+    Clipboard
 }

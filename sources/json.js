@@ -1,6 +1,6 @@
 'use-strict'
 
-JSON.parseable = (text) => {
+JSON.parseable = function (text) {
     try {
         let json = JSON.parse(text);
         return json;
@@ -9,7 +9,7 @@ JSON.parseable = (text) => {
     }
 };
 
-JSON.flatten = (obj, notation = '.', prefix = '', flattenLastArray = true) => {
+JSON.flatten = function (obj, notation = '.', prefix = '', flattenLastArray = true) {
     return Object.keys(obj).reduce((acc, k) => {
         const pre = prefix.length ? prefix + notation : '';
         if (Array.isArray(obj[k])) {
@@ -29,7 +29,7 @@ JSON.flatten = (obj, notation = '.', prefix = '', flattenLastArray = true) => {
     }, {});
 };
 
-JSON.unflatten = (obj, notation = '.') => {
+JSON.unflatten = function (obj, notation = '.') {
     let result = {};
     for (let key in obj) {
         let keys = key.split(notation);
@@ -70,8 +70,37 @@ JSON.unflatten = (obj, notation = '.') => {
     return result;
 }
 
-JSON.take = (obj, quantity) => {
+JSON.take = function (obj, quantity) {
     return obj.slice(0, quantity);
+}
+
+JSON.fromCSV = function (csv, separator = ',', headers_pos = 0) {
+    const lines = csv.trim().split("\n");
+    const headers = lines[headers_pos].split(separator);
+    const result = [];
+    for (let i = (headers_pos + 1); i < lines.length; i++) {
+        const obj = {};
+        const currentLine = lines[i].split(separator);
+        let cursor = 0;
+        if (!currentLine.every(c => c === "")) { // Validar si la fila está vacía
+            for (let j = 0; j < headers.length; j++) {
+                if (currentLine[cursor].startsWith('"')) {
+                    let field = currentLine[cursor].substring(1);
+
+                    while (!currentLine[cursor].endsWith('"')) {
+                        cursor++;
+                        field += `${separator}${currentLine[cursor]}`;
+                    }
+                    obj[headers[j]] = field.slice(0, -1);
+                } else {
+                    obj[headers[j]] = currentLine[cursor];
+                }
+                cursor++;
+            }
+            result.push(obj);
+        }
+    }
+    return result;
 }
 
 module.exports = JSON
