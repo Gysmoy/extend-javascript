@@ -1,3 +1,5 @@
+'use-strict'
+
 const GET  = {}
 
 let urlParams = new URLSearchParams(location.search);
