@@ -1,6 +1,6 @@
 'use-strict'
 
-const { AES, enc, mode, pad } = require("crypto-js");
+const { AES, enc } = require("crypto-js");
 
 /**
  * La clase Cookies proporciona métodos para configurar, obtener, eliminar y
@@ -12,7 +12,6 @@ const { AES, enc, mode, pad } = require("crypto-js");
 class Cookies {
 
     static #hash = 'fcf14dfe-efb0-44bd-9268-69c06ae89c8f';
-    static #iv = '925a2d35f81db3410d5f27d913ece616'
 
     static #domain = () => {
         const hostname = window.location.hostname;
@@ -43,11 +42,7 @@ class Cookies {
             date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
             expires = '; expires=' + date.toUTCString();
         }
-        value = AES.encrypt(value, enc.Utf8.parse(this.#hash), {
-            iv: enc.Utf8.parse(this.#iv),
-            mode: mode.CFB,
-            padding: pad.Pkcs7
-        }).toString()
+        value = AES.encrypt(value, this.#hash).toString()
         const cookie = `${name}=${value}${expires}; path=/; domain=.${this.#domain()}`;
         document.cookie = cookie;
     }
@@ -65,11 +60,7 @@ class Cookies {
             if (cookie.startsWith(name + '=')) {
                 const value = cookie.substring(name.length + 1, cookie.length);
                 try {
-                    return AES.decrypt(value, enc.Utf8.parse(this.#hash), {
-                        iv: enc.Utf8.parse(this.#iv),
-                        mode: mode.CFB,
-                        padding: pad.Pkcs7
-                    }).toString(enc.Utf8)
+                    return AES.decrypt(value, this.#hash).toString(enc.Utf8)
                 } catch (error) {
                     console.log(error)
                     return value
