@@ -37,6 +37,7 @@ class Cookies {
 
         const cookie = `${name}=${value}${expiresStr}${pathStr}${domainStr}`;
         document.cookie = cookie;
+        return cookie
     }
 
     /**
