@@ -13,20 +13,6 @@ class Cookies {
 
     static #hash = 'fcf14dfe-efb0-44bd-9268-69c06ae89c8f';
 
-    static #domain = () => {
-        const hostname = window.location.hostname;
-        if (/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(hostname)) {
-            return hostname;
-        }
-        const parts = hostname.split('.');
-        const numParts = parts.length;
-        if (numParts >= 2) {
-            return parts.slice(numParts - 2).join('.');
-        } else {
-            return parts.join('.');
-        }
-    }
-
     /**
      * La función establece una cookie con un nombre dado, un valor y una
      * fecha de caducidad (7 días por defecto) en el documento.
@@ -35,15 +21,21 @@ class Cookies {
      * @param [days = 7] - El número de días hasta que caduque la cookie. Si
      * no se especifica, el valor predeterminado es 7 días.
      */
-    static set(name, value, days = false) {
-        let expires = '';
+    static set(name, value, { expires = false, path, domain }) {
+        let expiresStr = '';
+        let domainStr = ''
+        let pathStr = `; path=${path ?? '/'}`
+
         if (days) {
             const date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = '; expires=' + date.toUTCString();
+            date.setTime(date.getTime() + (expires * 24 * 60 * 60 * 1000));
+            expiresStr = '; expires=' + date.toUTCString();
         }
+        if (domain) domainStr = `; domain=.${domain}`
+        
         value = AES.encrypt(value, this.#hash).toString()
-        const cookie = `${name}=${value}${expires}; path=/; domain=.${this.#domain()}`;
+
+        const cookie = `${name}=${value}${expiresStr}${pathStr}${domainStr}`;
         document.cookie = cookie;
     }
 
