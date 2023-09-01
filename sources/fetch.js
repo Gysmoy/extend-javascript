@@ -1,4 +1,5 @@
 const JSON = require('./sources/json')
+
 const FetchParams = {}
 
 const Fetch = async (url, params = {}) => {
