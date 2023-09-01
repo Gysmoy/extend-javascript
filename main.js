@@ -5,6 +5,7 @@ const JSON = require('./sources/json')
 const Math = require('./sources/math')
 const Notify = require('./sources/notify')
 const storage = require('./sources/storage')
+const _fetch = require('./sources/fetch')
 
 module.exports = {
     Local: storage.Local,
@@ -14,5 +15,7 @@ module.exports = {
     GET,
     JSON,
     Math,
-    Clipboard
+    Clipboard,
+    FetchParams: _fetch.FetchParams,
+    Fetch: _fetch.Fetch
 }
