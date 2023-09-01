@@ -1,4 +1,4 @@
-const JSON = require('./sources/json')
+const JSON = require('./json')
 
 const FetchParams = {}
 
