@@ -32,7 +32,7 @@ class Cookies {
             expiresStr = '; expires=' + date.toUTCString();
         }
         if (domain) domainStr = `; domain=.${domain}`
-        
+
         value = AES.encrypt(value, this.#hash).toString()
 
         const cookie = `${name}=${value}${expiresStr}${pathStr}${domainStr}`;
@@ -88,17 +88,17 @@ class Cookies {
      * nombre de la cookie que debe eliminarse.
      */
     static delete(name) {
-        Cookies.set(name, '', -1);
+        this.set(name, '', { expires: -1 });
     }
 
     /**
      * Esta función elimina todas las cookies almacenadas en el navegador.
      */
     static destroy() {
-        const cookies = Cookies.getAll();
+        const cookies = this.getAll();
         for (const name in cookies) {
             if (name === 'XSRF-TOKEN') continue
-            Cookies.delete(name);
+            this.delete(name);
         }
     }
 }
