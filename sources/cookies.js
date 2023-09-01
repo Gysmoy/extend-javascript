@@ -55,7 +55,6 @@ class Cookies {
                 try {
                     return AES.decrypt(value, this.#hash).toString(enc.Utf8)
                 } catch (error) {
-                    console.log(error)
                     return value
                 }
             }
