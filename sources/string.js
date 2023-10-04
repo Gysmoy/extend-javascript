@@ -115,7 +115,6 @@ String.prototype.sortByComparison = function (array, getElement = (x) => x) {
         const rating = Math.max(
             ...getElement(data).clean().permutate().map(e => compareTwoStrings(e.clean(), query.clean()))
         )
-        console.log(rating)
         if (rating > 0) {
             return { data, rating }
         } else return
