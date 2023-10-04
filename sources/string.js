@@ -3,6 +3,63 @@
 const { compareTwoStrings } = require('string-similarity')
 const Math = require('./math')
 
+String.prototype.toTitleCase = function (capitalizeSingleWords = true) {
+    let text = this.toString()
+    const lastChar = text.slice(-1)
+    if (lastChar === ' ') return text
+    text = text.replace(/\b\w/g, l => l.toUpperCase())
+    const words = text.split(' ')
+    let result = ''
+    for (let i = 0; i < words.length; i++) {
+        const word = words[i]
+        if (word.includes('.')) {
+            result += word + ' '
+        } else {
+            const capitalize = capitalizeSingleWords || word.length > 1
+            if (capitalize) {
+                result += word.charAt(0) + word.slice(1).toLowerCase() + ' '
+            } else {
+                result += word.toLowerCase() + ' '
+            }
+        }
+    }
+    return result.trim()
+}
+
+String.prototype.includesEachOther = function (text) {
+    const text1 = this.toString().toLowerCase()
+    const text2 = text.toLowerCase()
+    return text1.includes(text2) || text2.includes(text1)
+}
+
+String.prototype.getAlNum = function (latin = true) {
+    let regex = new RegExp('[^a-zA-Z0-9Ññ\\s]', 'g')
+    if (!latin) regex = new RegExp('[^a-zA-Z0-9\\s]', 'g')
+
+    return this.toString()
+        .replace(regex, '')
+        .split(' ')
+        .filter(Boolean)
+        .join(' ')
+}
+
+String.prototype.keep = function (characters) {
+    const regex = new RegExp(`[^${characters}]`, 'g')
+    return this.toString()
+        .replace(regex, '')
+        .split(' ')
+        .filter(Boolean)
+        .join(' ')
+}
+
+String.prototype.reduce = function (chars) {
+    let text = this.toString()
+    if (text.length > chars) {
+        text = text.slice(0, chars - 3) + '...'
+    }
+    return text
+}
+
 String.prototype.clean = function (sep = ' ') {
     let text = this.toString()
 
@@ -54,14 +111,14 @@ String.prototype.permutate = function (separator = ' ') {
 
 String.prototype.sortByComparison = function (array, getElement = (x) => x) {
     let query = this.toString()
-    array = array.map(object => {
-        return {
-            data: object,
-            rating: Math.max(
-                ...getElement(object).clean().permutate().map(e => compareTwoStrings(e.clean(), query))
-            )
-        }
-    }).sort((a, b) => b.rating - a.rating)
+    array = array.map(data => {
+        const rating = Math.max(
+            ...getElement(object).clean().permutate().map(e => compareTwoStrings(e.clean(), query))
+        )
+        if (rating > 0) {
+            return { data, rating }
+        } else return
+    }).filter(Boolean).sort((a, b) => b.rating - a.rating)
     return array.map(x => x.data)
 }
 
