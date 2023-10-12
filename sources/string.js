@@ -3,6 +3,35 @@
 const { compareTwoStrings } = require('string-similarity')
 const Math = require('./math')
 
+String.prototype.matchAndCreateObject = function (regex, structure) {
+    try {
+        let matched = this.match(regex);
+        let object = {};
+
+        structure.split(",").forEach((s, i) => {
+            object[s.trim()] = matched[i + 1].trim();
+        });
+
+        return object;
+    } catch (error) {
+        return null;
+    }
+}
+
+String.prototype.split2 = function (separator, { regex, structure } = {}) {
+    let array = this.split(separator);
+
+    return array
+        .map(e => {
+            if (!regex) {
+                return e.trim();
+            } else {
+                return e.trim().matchAndCreateObject(regex, structure);
+            }
+        })
+        .filter(Boolean);
+};
+
 String.prototype.toTitleCase = function (capitalizeSingleWords = true) {
     let text = this.toString()
     const lastChar = text.slice(-1)
@@ -121,5 +150,7 @@ String.prototype.sortByComparison = function (array, getElement = (x) => x) {
     }).filter(Boolean).sort((a, b) => b.rating - a.rating)
     return array.map(x => x.data)
 }
+
+
 
 module.exports = String
