@@ -74,33 +74,27 @@ JSON.take = function (obj, quantity) {
     return obj.slice(0, quantity);
 }
 
-JSON.fromCSV = function (csv, separator = ',', headers_pos = 0) {
-    const lines = csv.trim().split("\n");
-    const headers = lines[headers_pos].split(separator);
-    const result = [];
-    for (let i = (headers_pos + 1); i < lines.length; i++) {
-        const obj = {};
-        const currentLine = lines[i].split(separator);
-        let cursor = 0;
-        if (!currentLine.every(c => c === "")) { // Validar si la fila está vacía
-            for (let j = 0; j < headers.length; j++) {
-                if (currentLine[cursor].startsWith('"')) {
-                    let field = currentLine[cursor].substring(1);
+JSON.fromCSV = function (csv, separator = ',') {
+    const lineas = String(csv).trim().split('\n');
+    const resultado = [];
+    const encabezados = lineas[0].split(separator).map(item => item.trim());
 
-                    while (!currentLine[cursor].endsWith('"')) {
-                        cursor++;
-                        field += `${separator}${currentLine[cursor]}`;
-                    }
-                    obj[headers[j]] = field.slice(0, -1);
-                } else {
-                    obj[headers[j]] = currentLine[cursor];
-                }
-                cursor++;
-            }
-            result.push(obj);
+    const regexp = new RegExp(`${separator}(?=(?:(?:[^"]*"){2})*[^"]*$)`)
+
+    for (let i = 1; i < lineas.length; i++) {
+        const obj = {};
+        
+        const filaActual = lineas[i].split(regexp)
+            .map(item => item.trim().replace(/^"(.*)"$/, '$1'));
+
+        for (let j = 0; j < encabezados.length; j++) {
+            obj[encabezados[j]] = filaActual[j];
         }
+
+        resultado.push(obj);
     }
-    return result;
+
+    return resultado;
 }
 
 module.exports = JSON
