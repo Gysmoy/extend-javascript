@@ -109,28 +109,4 @@ JSON.isNested = function (object) {
     return false
 }
 
-const object = {
-    string: 'Hola mundo',
-    number: 54,
-    boolean: true,
-    null: null,
-    object: {
-        key1: 'value1',
-        key2: 'value2'
-    },
-    array: [
-        [{hola: 'mundo'}, 2, 3],
-        [11, 12, 13],
-        [21, 22, 23],
-        [31, 32, 33],
-        [41, 42, 43]
-    ]
-}
-const flattened = JSON.flatten(object)
-const restored = JSON.unflatten(flattened)
-
-console.log(JSON.stringify(object, null, 2))
-console.log(JSON.stringify(flattened, null, 2))
-console.log(JSON.stringify(restored, null, 2))
-
 module.exports = JSON
