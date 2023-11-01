@@ -28,8 +28,17 @@ class Cookies {
 
         if (expires) {
             const date = new Date();
-            date.setTime(date.getTime() + (expires * 24 * 60 * 60 * 1000));
-            expiresStr = '; expires=' + date.toUTCString();
+            if (expires === -1) {
+                const conf = this.get(`${name}.conf`)
+                if (conf && !domain) {
+                    const confData = JSON.parse(conf)
+                    domainStr = `; domain=.${confData.domain}`
+                }
+                expiresStr = '; expires=Thu, 01 Jan 1970 00:00:00 UTC'
+            } else {
+                date.setTime(date.getTime() + (expires * 24 * 60 * 60 * 1000));
+                expiresStr = '; expires=' + date.toUTCString();
+            }
         }
         if (domain) domainStr = `; domain=.${domain}`
 
@@ -37,6 +46,11 @@ class Cookies {
 
         const cookie = `${name}=${value}${expiresStr}${pathStr}${domainStr}`;
         document.cookie = cookie;
+
+        const configValue = AES.encrypt(JSON.stringify({ domain, expires }), this.#hash).toString()
+        const configCookie = `${name}.conf=${configValue}${expiresStr}${pathStr}${domainStr}`;
+        document.cookie = configCookie;
+
         return cookie
     }
 
