@@ -10,7 +10,7 @@ const { AES, enc } = require("crypto-js");
  * @version 3.1.1
  * @license Todos los derechos reservados.
  */
-class BaseStorage {
+class StorageBase {
     /**
      * Almacén de almacenamiento local.
      * @type {Storage}
@@ -211,7 +211,7 @@ class BaseStorage {
 }
 
 /**
- * La clase `Local` extiende la clase `BaseStorage` para trabajar con el almacenamiento de sesión.
+ * La clase `Local` extiende la clase `StorageBase` para trabajar con el almacenamiento de sesión.
  */
 class Local extends StorageBase {
     /**
@@ -222,9 +222,9 @@ class Local extends StorageBase {
 }
 
 /**
- * La clase `Session` extiende la clase `BaseStorage` para trabajar con el almacenamiento de sesión.
+ * La clase `Session` extiende la clase `StorageBase` para trabajar con el almacenamiento de sesión.
  */
-class Session extends Local {
+class Session extends StorageBase {
     /**
      * Almacén de almacenamiento de sesión.
      * @type {Storage}
