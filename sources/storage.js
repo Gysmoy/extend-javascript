@@ -10,7 +10,7 @@ const { AES, enc } = require("crypto-js");
  * @version 3.1.1
  * @license Todos los derechos reservados.
  */
-class Local {
+class BaseStorage {
     /**
      * Almacén de almacenamiento local.
      * @type {Storage}
@@ -31,6 +31,8 @@ class Local {
      * @private
      */
     static #MAX_CHUNK_SIZE = 4.5 * 1024 * 1024; // 4.5 MB en bytes
+
+    static #listeners = {};
 
     /**
      * Calcula el tamaño en bytes de una cadena.
@@ -192,10 +194,35 @@ class Local {
     static saveStorageTypes() {
         this.storage.setItem("storage_types", JSON.stringify(this.storage_types));
     }
+
+    static onchange(key, callback) {
+        if (!this.#listeners[key]) {
+            this.#listeners[key] = [];
+        }
+        this.#listeners[key].push(callback);
+    }
+
+    static #handleChange(e) {
+        if (e.storageArea === this.storage && this.#listeners[e.key]) {
+            const newValue = this.get(e.key);
+            this.#listeners[e.key].forEach(callback => callback(newValue, e.oldValue));
+        }
+    }
 }
 
 /**
- * La clase `Session` extiende la clase `Local` para trabajar con el almacenamiento de sesión.
+ * La clase `Local` extiende la clase `BaseStorage` para trabajar con el almacenamiento de sesión.
+ */
+class Local extends StorageBase {
+    /**
+     * Almacén de almacenamiento de sesión.
+     * @type {Storage}
+     */
+    static storage = localStorage;
+}
+
+/**
+ * La clase `Session` extiende la clase `BaseStorage` para trabajar con el almacenamiento de sesión.
  */
 class Session extends Local {
     /**
@@ -208,5 +235,19 @@ class Session extends Local {
 // Cargar los tipos de almacenamiento previamente guardados en el almacenamiento local y de sesión.
 Local.storage_types = JSON.parse(localStorage.getItem("storage_types")) || {};
 Session.storage_types = JSON.parse(sessionStorage.getItem("storage_types")) || {};
+
+// Configurar un único event listener para ambos tipos de almacenamiento
+window.addEventListener('storage', (e) => {
+    const newEvent = {
+        oldValue: e.oldValue,
+        newValue: e.newValue,
+        url: e.url
+    }
+    if (e.storageArea == 'localStorage') {
+        Local.#handleChange(newEvent);
+    } else {
+        Session.#handleChange(newEvent);
+    }
+});
 
 module.exports = { Local, Session }
