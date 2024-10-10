@@ -202,7 +202,7 @@ class BaseStorage {
         this.#listeners[key].push(callback);
     }
 
-    static #handleChange(e) {
+    static handleChange(e) {
         if (e.storageArea === this.storage && this.#listeners[e.key]) {
             const newValue = this.get(e.key);
             this.#listeners[e.key].forEach(callback => callback(newValue, e.oldValue));
@@ -244,9 +244,9 @@ window.addEventListener('storage', (e) => {
         url: e.url
     }
     if (e.storageArea == 'localStorage') {
-        Local.#handleChange(newEvent);
+        Local.handleChange(newEvent);
     } else {
-        Session.#handleChange(newEvent);
+        Session.handleChange(newEvent);
     }
 });
 
