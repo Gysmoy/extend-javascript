@@ -60,8 +60,9 @@ class Cookies {
      * @returns El método `get` devuelve el valor de la cookie con el nombre
      * especificado si existe, y `undefined` si no existe.
      */
-    static get(name) {
+    static get(name, last = true) {
         const cookies = document.cookie.split(';');
+        if (last) cookies.reverse()
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
             if (cookie.startsWith(name + '=')) {
