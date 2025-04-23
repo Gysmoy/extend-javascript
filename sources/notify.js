@@ -66,6 +66,11 @@ class Notify {
         img.width = 30;
         img.height = 30;
         img.style.margin = 0;
+        img.style.width = '30px';
+        img.style.height = '30px';
+        img.style.aspectRatio = '1/1';
+        img.style.objectFit = 'contain';
+        img.style.objectPosition = 'center';
 
         td00.innerHTML = img.outerHTML;
 
