@@ -59,6 +59,7 @@ class Notify {
         let td00 = document.createElement('td');
         td00.rowSpan = 2;
         td00.style.padding = '10px 10px 10px 15px';
+        td00.style.width = '55px';
         td00.style.verticalAlign = 'middle';
 
         let img = document.createElement('img');
