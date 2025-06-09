@@ -17,7 +17,7 @@ class Local {
      */
     static storage = localStorage;
 
-    static #hash = 'cff54ba3-d685-481c-9fb6-a2e5e9f78a4d'
+    static priv_hash = 'cff54ba3-d685-481c-9fb6-a2e5e9f78a4d'
 
     /**
      * Registro de los tipos de datos almacenados.
@@ -30,7 +30,7 @@ class Local {
      * @type {number}
      * @private
      */
-    static #MAX_CHUNK_SIZE = 4.5 * 1024 * 1024; // 4.5 MB en bytes
+    static priv_MAX_CHUNK_SIZE = 4.5 * 1024 * 1024; // 4.5 MB en bytes
 
     /**
      * Calcula el tamaño en bytes de una cadena.
@@ -38,7 +38,7 @@ class Local {
      * @returns {number} - Tamaño en bytes de la cadena.
      * @private
      */
-    static #bytesize(string) {
+    static priv_bytesize(string) {
         const encoder = new TextEncoder();
         return encoder.encode(string).length;
     }
@@ -49,14 +49,14 @@ class Local {
      * @returns {string[]} - Fragmentos de la cadena dividida.
      * @private
      */
-    static #partition(string) {
+    static priv_partition(string) {
         const chunks = [];
         let currentIndex = 0;
         while (currentIndex < string.length) {
             const remainingText = string.slice(currentIndex);
-            const chunkSize = Math.min(this.#MAX_CHUNK_SIZE, remainingText.length);
+            const chunkSize = Math.min(this.priv_MAX_CHUNK_SIZE, remainingText.length);
             let chunk = remainingText.slice(0, chunkSize);
-            while (this.#bytesize(chunk) > this.#MAX_CHUNK_SIZE) {
+            while (this.priv_bytesize(chunk) > this.priv_MAX_CHUNK_SIZE) {
                 chunk = chunk.slice(0, chunk.length - 1);
             }
             chunks.push(chunk);
@@ -70,7 +70,7 @@ class Local {
      * @returns {string[]} - Lista de claves únicas.
      * @private
      */
-    static #keys() {
+    static priv_keys() {
         return [...new Set(Object.keys(this.storage).map(key => {
             const coincidences = key.match(/^(.*?)\[/)
             if (coincidences) return coincidences[1]
@@ -85,10 +85,10 @@ class Local {
      */
     static set(name, value) {
         this.delete(name)
-        const value2save = AES.encrypt(JSON.stringify(value), this.#hash).toString();
+        const value2save = AES.encrypt(JSON.stringify(value), this.priv_hash).toString();
         this.storage_types[name] = typeof value;
-        if (this.#bytesize(value2save) > this.#MAX_CHUNK_SIZE) {
-            let parts = this.#partition(value2save);
+        if (this.priv_bytesize(value2save) > this.priv_MAX_CHUNK_SIZE) {
+            let parts = this.priv_partition(value2save);
             parts.forEach((part, i) => {
                 this.storage.setItem(`${name}[${i}]`, part);
             });
@@ -104,7 +104,7 @@ class Local {
      * @returns {string} - Valor decodificado.
      * @private
      */
-    static #get(name) {
+    static priv_get(name) {
         let keys = Object.keys(this.storage).map(key => {
             if (key === name) return {
                 position: 0,
@@ -125,11 +125,11 @@ class Local {
      * @returns {*} - El valor almacenado en el tipo correspondiente.
      */
     static get(name) {
-        if (!this.#keys().includes(name)) return;
-        let valueencoded = this.#get(name);
+        if (!this.priv_keys().includes(name)) return;
+        let valueencoded = this.priv_get(name);
         let valuedecoded;
         try {
-            valuedecoded = AES.decrypt(valueencoded, this.#hash).toString(enc.Utf8);
+            valuedecoded = AES.decrypt(valueencoded, this.priv_hash).toString(enc.Utf8);
         } catch (e) { }
         const value = JSON.parse(valuedecoded);
         const type = this.storage_types[name];
@@ -153,7 +153,7 @@ class Local {
      */
     static getAll() {
         const result = {};
-        this.#keys().forEach(key => {
+        this.priv_keys().forEach(key => {
             if (key !== 'storage_types') {
                 const value = this.get(key);
                 result[key] = value;
