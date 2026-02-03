@@ -1,10 +1,12 @@
 const JSON = require('./json')
 
-let FetchParams = () => ({})
+let FetchParams = {
+    call: () => ({})
+}
 
 const Fetch = async (url, params = {}) => {
     try {
-        const defaultFlatten = JSON.flatten(FetchParams())
+        const defaultFlatten = JSON.flatten(FetchParams.call())
         const flatten = JSON.flatten(params)
         const totalParams = Object.assign(defaultFlatten, flatten)
 
